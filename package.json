@@ -1,0 +1,24 @@
+{
+  "name": "backlog-issue-fetcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.14.9",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2",
+    "ts-node": "^10.9.2"
+  }
+}
