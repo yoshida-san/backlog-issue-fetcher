@@ -1,5 +1,5 @@
 export function logInfo(message: string) {
-  console.log(`[INFO] ${message}`);
+  console.log(`${message}`);
 }
 
 export function logError(message: string, error?: unknown) {
