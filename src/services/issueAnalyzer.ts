@@ -3,7 +3,7 @@ import * as projectService from './projectService';
 import * as issueService from './issueService';
 import { getProjectMetadata } from './projectMetadataService';
 import { logInfo, logError } from '../utils/logger';
-import { Issue, Project } from '../types';
+import { Issue, Project } from '../models/types';
 
 async function getProjectInfo(projectName: string): Promise<Project> {
   const project = await projectService.getProjectByName(projectName);

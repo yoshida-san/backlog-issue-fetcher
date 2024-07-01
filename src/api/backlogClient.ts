@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CONFIG } from '../config';
-import { Project, IssueType, Issue, Status, Category } from '../types';
+import { Project, IssueType, Issue, Status, Category } from '../models/types';
 
 const baseUrl = `https://${CONFIG.SPACE_ID}.backlog.jp/api/v2`;
 

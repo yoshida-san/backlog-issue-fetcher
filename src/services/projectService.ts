@@ -1,5 +1,5 @@
 import * as backlogClient from '../api/backlogClient';
-import { Project } from '../types';
+import { Project } from '../models/types';
 import { logError } from '../utils/logger';
 
 export async function getProjectByName(projectName: string): Promise<Project | null> {

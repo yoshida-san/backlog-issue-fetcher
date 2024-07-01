@@ -1,5 +1,5 @@
 import * as backlogClient from '../api/backlogClient';
-import { Issue } from '../types';
+import { Issue } from '../models/types';
 
 export async function getProjectIssues(
   projectId: number,

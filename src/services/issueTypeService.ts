@@ -1,7 +1,7 @@
 // src/services/issueTypeService.ts
 import * as backlogClient from '../api/backlogClient';
 import { getIdsFromNames } from '../utils/entityIdResolver';
-import { IssueType } from '../types';
+import { IssueType } from '../models/types';
 
 export async function getIssueTypeIds(
   projectId: number,

@@ -1,6 +1,6 @@
 import * as backlogClient from '../api/backlogClient';
 import { getIdsFromNames } from '../utils/entityIdResolver';
-import { Status } from '../types';
+import { Status } from '../models/types';
 
 export async function getStatusIds(
   projectId: number,
