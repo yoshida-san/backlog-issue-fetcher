@@ -4,7 +4,13 @@ import { Status } from '../models/types';
 
 export async function getStatusIds(
   projectId: number,
-  statusNames: string[]
+  statusNames?: string[]
 ): Promise<Map<string, number>> {
-  return getIdsFromNames<Status>(backlogClient.getStatuses, projectId, statusNames);
+  const allStatuses = await backlogClient.getStatuses(projectId);
+  
+  if (!statusNames || statusNames.length === 0) {
+    return new Map(allStatuses.map(status => [status.name, status.id]));
+  }
+  
+  return getIdsFromNames<Status>(() => Promise.resolve(allStatuses), projectId, statusNames);
 }

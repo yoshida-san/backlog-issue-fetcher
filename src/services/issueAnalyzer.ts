@@ -1,7 +1,9 @@
 import { CONFIG } from '../config';
 import * as projectService from './projectService';
 import * as issueService from './issueService';
-import { getProjectMetadata } from './projectMetadataService';
+import * as issueTypeService from './issueTypeService';
+import * as statusService from './statusService';
+import * as categoryService from './categoryService';
 import { logInfo, logError } from '../utils/logger';
 import { Issue, Project, GetIssuesParams } from '../models/types';
 
@@ -14,24 +16,14 @@ async function getProjectInfo(projectName: string): Promise<Project> {
 }
 
 async function fetchProjectMetadata(projectId: number) {
-  const { issueTypeIds, statusIds, categoryIds } = await getProjectMetadata(projectId);
+  const issueTypeIds = await issueTypeService.getIssueTypeIds(projectId, CONFIG.ISSUE_TYPES);
+  const statusIds = await statusService.getStatusIds(projectId, CONFIG.ISSUE_STATUSES);
+  const categoryIds = await categoryService.getCategoryIds(projectId, CONFIG.ISSUE_CATEGORIES);
+
   return { issueTypeIds, statusIds, categoryIds };
 }
 
-async function fetchProjectIssues(
-  projectId: number,
-  issueTypeIds: number[],
-  statusIds: number[],
-  categoryIds: number[]
-): Promise<Issue[]> {
-  const params: GetIssuesParams = {
-    projectId,
-    issueTypeIds,
-    statusIds,
-    categoryIds,
-    updatedSince: CONFIG.UPDATED_SINCE,
-    updatedUntil: CONFIG.UPDATED_UNTIL,
-  };
+async function fetchProjectIssues(params: GetIssuesParams): Promise<Issue[]> {
   return await issueService.getProjectIssues(params);
 }
 
@@ -57,6 +49,20 @@ function countIssuesByType(
   return counts;
 }
 
+function countIssuesByStatus(
+  issues: Issue[],
+  statusIds: Map<string, number>
+): Map<string, number> {
+  const counts = new Map<string, number>();
+
+  statusIds.forEach((id, name) => {
+    const count = issues.filter((issue) => issue.status.id === id).length;
+    counts.set(name, count);
+  });
+
+  return counts;
+}
+
 function logIssueCounts(counts: Map<string, number>) {
   logInfo('Issue counts by type:');
   counts.forEach((count, typeName) => {
@@ -64,20 +70,34 @@ function logIssueCounts(counts: Map<string, number>) {
   });
 }
 
+function logStatusCounts(counts: Map<string, number>) {
+  logInfo('Issue counts by status:');
+  counts.forEach((count, statusName) => {
+    logInfo(`${statusName}: ${count}`);
+  });
+}
+
 async function analyzeProjectIssues(project: Project) {
   const { issueTypeIds, statusIds, categoryIds } = await fetchProjectMetadata(project.id);
 
-  const issues = await fetchProjectIssues(
-    project.id,
-    Array.from(issueTypeIds.values()),
-    Array.from(statusIds.values()),
-    Array.from(categoryIds.values())
-  );
+  const params: GetIssuesParams = {
+    projectId: project.id,
+    issueTypeIds: Array.from(issueTypeIds.values()),
+    statusIds: Array.from(statusIds.values()),
+    categoryIds: Array.from(categoryIds.values()),
+    updatedSince: CONFIG.UPDATED_SINCE,
+    updatedUntil: CONFIG.UPDATED_UNTIL,
+  };
+
+  const issues = await fetchProjectIssues(params);
 
   logIssueDetails(issues);
 
   const issueCounts = countIssuesByType(issues, issueTypeIds);
   logIssueCounts(issueCounts);
+
+  const statusCounts = countIssuesByStatus(issues, statusIds);
+  logStatusCounts(statusCounts);
 }
 
 export async function analyzeIssues() {

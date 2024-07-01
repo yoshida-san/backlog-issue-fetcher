@@ -13,3 +13,7 @@ export const CONFIG: Config = {
   UPDATED_SINCE: process.env.UPDATED_SINCE || '',
   UPDATED_UNTIL: process.env.UPDATED_UNTIL || '',
 };
+
+if (!CONFIG.API_KEY || !CONFIG.SPACE_ID || !CONFIG.PROJECT_NAME || !CONFIG.UPDATED_SINCE || !CONFIG.UPDATED_UNTIL) {
+  throw new Error('必須の環境変数が設定されていません。API_KEY, SPACE_ID, PROJECT_NAME, UPDATED_SINCE, UPDATED_UNTILは必須です。');
+}

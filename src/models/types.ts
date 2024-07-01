@@ -64,9 +64,9 @@ export interface Config {
   API_KEY: string;
   SPACE_ID: string;
   PROJECT_NAME: string;
-  ISSUE_TYPES: string[];
-  ISSUE_STATUSES: string[];
-  ISSUE_CATEGORIES: string[];
+  ISSUE_TYPES?: string[];
+  ISSUE_STATUSES?: string[];
+  ISSUE_CATEGORIES?: string[];
   UPDATED_SINCE: string;
   UPDATED_UNTIL: string;
 }
