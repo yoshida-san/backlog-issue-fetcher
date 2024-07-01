@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CONFIG } from '../config';
-import { Project, IssueType, Issue, Status, Category } from '../models/types';
+import { Project, IssueType, Issue, Status, Category, GetIssuesParams } from '../models/types';
 
 const baseUrl = `https://${CONFIG.SPACE_ID}.backlog.jp/api/v2`;
 
@@ -32,24 +32,17 @@ export async function getIssueTypes(projectId: number): Promise<IssueType[]> {
   }
 }
 
-export async function getIssues(
-  projectId: number,
-  issueTypeIds: number[],
-  statusIds: number[],
-  categoryIds: number[],
-  updatedSince: string,
-  updatedUntil: string
-): Promise<Issue[]> {
+export async function getIssues(params: GetIssuesParams): Promise<Issue[]> {
   try {
     const response = await axios.get(`${baseUrl}/issues`, {
       params: {
         apiKey: CONFIG.API_KEY,
-        projectId: [projectId],
-        issueTypeId: issueTypeIds,
-        statusId: statusIds,
-        categoryId: categoryIds,
-        updatedSince: updatedSince,
-        updatedUntil: updatedUntil,
+        projectId: [params.projectId],
+        issueTypeId: params.issueTypeIds,
+        statusId: params.statusIds,
+        categoryId: params.categoryIds,
+        updatedSince: params.updatedSince,
+        updatedUntil: params.updatedUntil,
         count: 100,
       },
     });

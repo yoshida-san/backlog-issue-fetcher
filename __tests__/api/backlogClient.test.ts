@@ -119,7 +119,14 @@ describe('BacklogClient', () => {
   });
 
   describe('getIssues', () => {
-    const apiPrams = {};
+    const apiParams: types.GetIssuesParams = {
+      projectId: 1,
+      issueTypeIds: [1, 2],
+      statusIds: [1],
+      categoryIds: [1],
+      updatedSince: '2023-01-01',
+      updatedUntil: '2024-12-31',
+    };
     const mockIssues: types.Issue[] = [
       {
         id: 1,
@@ -187,22 +194,15 @@ describe('BacklogClient', () => {
 
     it('fetches issues successfully', async () => {
       mock.onGet(`${baseUrl}/issues`).reply(200, mockIssues);
-      const statuses = await backlogClient.getIssues(
-        1,
-        [1, 2],
-        [1],
-        [1],
-        '2023-01-01',
-        '2024-12-31'
-      );
-      expect(statuses).toEqual(mockIssues);
+      const issues = await backlogClient.getIssues(apiParams);
+      expect(issues).toEqual(mockIssues);
     });
 
     it('handles error when fetching issues fails', async () => {
       mock.onGet(`${baseUrl}/issues`).reply(404);
-      await expect(
-        backlogClient.getIssues(1, [1, 2], [1], [1], '2023-01-01', '2024-12-31')
-      ).rejects.toThrow('Request failed with status code 404');
+      await expect(backlogClient.getIssues(apiParams)).rejects.toThrow(
+        'Request failed with status code 404'
+      );
     });
   });
 });

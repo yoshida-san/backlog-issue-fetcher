@@ -3,7 +3,7 @@ import * as projectService from './projectService';
 import * as issueService from './issueService';
 import { getProjectMetadata } from './projectMetadataService';
 import { logInfo, logError } from '../utils/logger';
-import { Issue, Project } from '../models/types';
+import { Issue, Project, GetIssuesParams } from '../models/types';
 
 async function getProjectInfo(projectName: string): Promise<Project> {
   const project = await projectService.getProjectByName(projectName);
@@ -24,14 +24,15 @@ async function fetchProjectIssues(
   statusIds: number[],
   categoryIds: number[]
 ): Promise<Issue[]> {
-  return await issueService.getProjectIssues(
+  const params: GetIssuesParams = {
     projectId,
     issueTypeIds,
     statusIds,
     categoryIds,
-    CONFIG.UPDATED_SINCE,
-    CONFIG.UPDATED_UNTIL
-  );
+    updatedSince: CONFIG.UPDATED_SINCE,
+    updatedUntil: CONFIG.UPDATED_UNTIL,
+  };
+  return await issueService.getProjectIssues(params);
 }
 
 function logIssueDetails(issues: Issue[]) {

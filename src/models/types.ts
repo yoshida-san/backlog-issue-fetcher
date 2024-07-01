@@ -70,3 +70,12 @@ export interface Config {
   UPDATED_SINCE: string;
   UPDATED_UNTIL: string;
 }
+
+export interface GetIssuesParams {
+  projectId: number;
+  issueTypeIds: number[];
+  statusIds: number[];
+  categoryIds: number[];
+  updatedSince: string;
+  updatedUntil: string;
+}
