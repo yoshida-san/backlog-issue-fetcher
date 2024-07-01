@@ -28,6 +28,7 @@ async function fetchProjectIssues(params: GetIssuesParams): Promise<Issue[]> {
 }
 
 function logIssueDetails(issues: Issue[]) {
+  logInfo('\nIssue List:');
   issues.forEach((issue) => {
     logInfo(
       `Issue Key: ${issue.issueKey}, Summary: ${issue.summary}, Status: ${issue.status.name}, Categories: ${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'}`
@@ -64,14 +65,14 @@ function countIssuesByStatus(
 }
 
 function logIssueCounts(counts: Map<string, number>) {
-  logInfo('Issue counts by type:');
+  logInfo('\nIssue counts by type:');
   counts.forEach((count, typeName) => {
     logInfo(`${typeName}: ${count}`);
   });
 }
 
 function logStatusCounts(counts: Map<string, number>) {
-  logInfo('Issue counts by status:');
+  logInfo('\nIssue counts by status:');
   counts.forEach((count, statusName) => {
     logInfo(`${statusName}: ${count}`);
   });
