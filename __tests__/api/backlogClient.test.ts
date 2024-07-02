@@ -3,6 +3,7 @@ import * as types from '../../src/models/types';
 import MockAdapter from 'axios-mock-adapter';
 import { CONFIG } from '../../src/config';
 import * as backlogClient from '../../src/api/backlogClient';
+import { BacklogError, NetworkError } from '../../src/utils/errors';
 
 describe('BacklogClient', () => {
   const baseUrl = `https://${CONFIG.SPACE_ID}.backlog.jp/api/v2`;
@@ -31,9 +32,14 @@ describe('BacklogClient', () => {
       expect(project).toEqual(mockProjectData);
     });
 
-    it('throws an error when a project is not found', async () => {
+    it('throws BacklogError when a project is not found', async () => {
       mock.onGet(`${baseUrl}/projects/${projectName}`).reply(404);
-      await expect(backlogClient.getProject(projectName)).rejects.toThrow('Project not found');
+      await expect(backlogClient.getProject(projectName)).rejects.toThrow(BacklogError);
+    });
+
+    it('throws NetworkError on network issues', async () => {
+      mock.onGet(`${baseUrl}/projects/${projectName}`).networkError();
+      await expect(backlogClient.getProject(projectName)).rejects.toThrow(NetworkError);
     });
   });
 
@@ -50,9 +56,14 @@ describe('BacklogClient', () => {
       expect(issueTypes).toEqual(mockIssueTypes);
     });
 
-    it('handles error when fetching issue types fails', async () => {
+    it('throws BacklogError when project is not found', async () => {
       mock.onGet(`${baseUrl}/projects/${projectId}/issueTypes`).reply(404);
-      await expect(backlogClient.getIssueTypes(projectId)).rejects.toThrow('Project not found');
+      await expect(backlogClient.getIssueTypes(projectId)).rejects.toThrow(BacklogError);
+    });
+
+    it('throws NetworkError on network issues', async () => {
+      mock.onGet(`${baseUrl}/projects/${projectId}/issueTypes`).networkError();
+      await expect(backlogClient.getIssueTypes(projectId)).rejects.toThrow(NetworkError);
     });
   });
 
@@ -81,11 +92,14 @@ describe('BacklogClient', () => {
       expect(statuses).toEqual(mockStatuses);
     });
 
-    it('handles error when fetching statuses fails', async () => {
+    it('throws BacklogError when project is not found', async () => {
       mock.onGet(`${baseUrl}/projects/${projectId}/statuses`).reply(404);
-      await expect(backlogClient.getStatuses(projectId)).rejects.toThrow(
-        'Request failed with status code 404'
-      );
+      await expect(backlogClient.getStatuses(projectId)).rejects.toThrow(BacklogError);
+    });
+
+    it('throws NetworkError on network issues', async () => {
+      mock.onGet(`${baseUrl}/projects/${projectId}/statuses`).networkError();
+      await expect(backlogClient.getStatuses(projectId)).rejects.toThrow(NetworkError);
     });
   });
 
@@ -106,26 +120,29 @@ describe('BacklogClient', () => {
 
     it('fetches categories successfully', async () => {
       mock.onGet(`${baseUrl}/projects/${projectId}/categories`).reply(200, mockCategories);
-      const statuses = await backlogClient.getCategories(projectId);
-      expect(statuses).toEqual(mockCategories);
+      const categories = await backlogClient.getCategories(projectId);
+      expect(categories).toEqual(mockCategories);
     });
 
-    it('handles error when fetching categories fails', async () => {
+    it('throws BacklogError when project is not found', async () => {
       mock.onGet(`${baseUrl}/projects/${projectId}/categories`).reply(404);
-      await expect(backlogClient.getCategories(projectId)).rejects.toThrow(
-        'Request failed with status code 404'
-      );
+      await expect(backlogClient.getCategories(projectId)).rejects.toThrow(BacklogError);
+    });
+
+    it('throws NetworkError on network issues', async () => {
+      mock.onGet(`${baseUrl}/projects/${projectId}/categories`).networkError();
+      await expect(backlogClient.getCategories(projectId)).rejects.toThrow(NetworkError);
     });
   });
 
   describe('getIssues', () => {
-    const apiParams: types.GetIssuesParams = {
+    const params: types.GetIssuesParams = {
       projectId: 1,
       issueTypeIds: [1, 2],
       statusIds: [1],
       categoryIds: [1],
       updatedSince: '2023-01-01',
-      updatedUntil: '2024-12-31',
+      updatedUntil: '2024-12-31'
     };
     const mockIssues: types.Issue[] = [
       {
@@ -159,50 +176,22 @@ describe('BacklogClient', () => {
           name: 'John Smith',
         },
       },
-      {
-        id: 2,
-        projectId: 1,
-        issueKey: 'TST-2',
-        keyId: 1,
-        issueType: {
-          id: 2,
-          projectId: 1,
-          name: 'Done',
-          color: '#868cb7',
-          displayOrder: 1,
-        },
-        summary: 'issue summary',
-        description: 'issue description',
-        status: {
-          id: 1,
-          name: 'Task',
-        },
-        created: '2023-07-08T10:24:28Z',
-        updated: '2023-08-09T11:25:29Z',
-        assignee: null,
-        category: null,
-        startDate: null,
-        dueDate: null,
-        estimatedHours: null,
-        actualHours: null,
-        createdUser: {
-          id: 1,
-          name: 'John Smith',
-        },
-      },
     ];
 
     it('fetches issues successfully', async () => {
       mock.onGet(`${baseUrl}/issues`).reply(200, mockIssues);
-      const issues = await backlogClient.getIssues(apiParams);
+      const issues = await backlogClient.getIssues(params);
       expect(issues).toEqual(mockIssues);
     });
 
-    it('handles error when fetching issues fails', async () => {
-      mock.onGet(`${baseUrl}/issues`).reply(404);
-      await expect(backlogClient.getIssues(apiParams)).rejects.toThrow(
-        'Request failed with status code 404'
-      );
+    it('throws NetworkError on request failure', async () => {
+      mock.onGet(`${baseUrl}/issues`).reply(500);
+      await expect(backlogClient.getIssues(params)).rejects.toThrow(NetworkError);
+    });
+
+    it('throws NetworkError on network issues', async () => {
+      mock.onGet(`${baseUrl}/issues`).networkError();
+      await expect(backlogClient.getIssues(params)).rejects.toThrow(NetworkError);
     });
   });
 });
