@@ -2,7 +2,7 @@ import { CONFIG } from '../config';
 import * as issueTypeService from './issueTypeService';
 import * as statusService from './statusService';
 import * as categoryService from './categoryService';
-import { logInfo, logError } from '../utils/logger';
+import { logError } from '../utils/logger';
 
 export async function getProjectMetadata(projectId: number) {
   try {

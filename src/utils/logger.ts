@@ -4,15 +4,9 @@ export function logInfo(message: string) {
 
 export function logError(error: Error) {
   console.error(`[ERROR] ${error.name}: ${error.message}`);
-  if ('code' in error) {
-    console.error(`Error Code: ${(error as any).code}`);
-  }
-  if ('details' in error) {
-    console.error('Details:', (error as any).details);
-  }
-  if ('status' in error) {
-    console.error(`Status: ${(error as any).status}`);
-  }
+  if ('code' in error) console.error(`Error Code: ${error.code}`);
+  if ('details' in error) console.error('Details:', error.details);
+  if ('status' in error) console.error(`Status: ${error.status}`);
 }
 
 export function logWarning(message: string) {
