@@ -46,7 +46,9 @@ export async function getIssueTypes(projectId: number): Promise<IssueType[]> {
   }
 }
 
-export async function getIssues(params: GetIssuesParams): Promise<Issue[]> {
+export async function getIssues(
+  params: GetIssuesParams & { count?: number; offset?: number }
+): Promise<Issue[]> {
   try {
     const response = await axios.get(`${baseUrl}/issues`, {
       params: {
@@ -57,7 +59,8 @@ export async function getIssues(params: GetIssuesParams): Promise<Issue[]> {
         categoryId: params.categoryIds,
         updatedSince: params.updatedSince,
         updatedUntil: params.updatedUntil,
-        count: 100,
+        count: params.count || 100,
+        offset: params.offset || 0,
       },
     });
     return response.data;
