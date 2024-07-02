@@ -7,10 +7,10 @@ export async function getStatusIds(
   statusNames?: string[]
 ): Promise<Map<string, number>> {
   const allStatuses = await backlogClient.getStatuses(projectId);
-  
+
   if (!statusNames || statusNames.length === 0) {
-    return new Map(allStatuses.map(status => [status.name, status.id]));
+    return new Map(allStatuses.map((status) => [status.name, status.id]));
   }
-  
+
   return getIdsFromNames<Status>(() => Promise.resolve(allStatuses), projectId, statusNames);
 }

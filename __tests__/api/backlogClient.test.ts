@@ -142,7 +142,7 @@ describe('BacklogClient', () => {
       statusIds: [1],
       categoryIds: [1],
       updatedSince: '2023-01-01',
-      updatedUntil: '2024-12-31'
+      updatedUntil: '2024-12-31',
     };
     const mockIssues: types.Issue[] = [
       {

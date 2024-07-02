@@ -7,7 +7,9 @@ export async function getProjectByName(projectName: string): Promise<Project | n
   try {
     return await backlogClient.getProject(projectName);
   } catch (error) {
-    logError(new BacklogError(`Error fetching project "${projectName}"`, 'PROJECT_FETCH_ERROR', error));
+    logError(
+      new BacklogError(`Error fetching project "${projectName}"`, 'PROJECT_FETCH_ERROR', error)
+    );
     return null;
   }
 }

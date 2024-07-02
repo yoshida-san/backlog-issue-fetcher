@@ -9,6 +9,7 @@ This project is a tool designed to fetch and analyze issues from a specific proj
 - Retrieve issues updated within a specified date range
 - Aggregate issues by type
 - Aggregate issues by status
+- Export issues list in CSV format
 
 ## Prerequisites
 - Node.js (version 12 or higher recommended)

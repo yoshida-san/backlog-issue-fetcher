@@ -16,8 +16,10 @@ export const CONFIG: Config = {
 };
 
 const requiredParams = ['API_KEY', 'SPACE_ID', 'PROJECT_NAME', 'UPDATED_SINCE', 'UPDATED_UNTIL'];
-const missingParams = requiredParams.filter(param => !CONFIG[param as keyof Config]);
+const missingParams = requiredParams.filter((param) => !CONFIG[param as keyof Config]);
 
 if (missingParams.length > 0) {
-  throw new ConfigurationError(`Missing required environment variables: ${missingParams.join(', ')}`);
+  throw new ConfigurationError(
+    `Missing required environment variables: ${missingParams.join(', ')}`
+  );
 }

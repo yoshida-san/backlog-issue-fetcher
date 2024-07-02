@@ -7,10 +7,14 @@ export async function getIssueTypeIds(
   issueTypeNames?: string[]
 ): Promise<Map<string, number>> {
   const allIssueTypes = await backlogClient.getIssueTypes(projectId);
-  
+
   if (!issueTypeNames || issueTypeNames.length === 0) {
-    return new Map(allIssueTypes.map(type => [type.name, type.id]));
+    return new Map(allIssueTypes.map((type) => [type.name, type.id]));
   }
-  
-  return getIdsFromNames<IssueType>(() => Promise.resolve(allIssueTypes), projectId, issueTypeNames);
+
+  return getIdsFromNames<IssueType>(
+    () => Promise.resolve(allIssueTypes),
+    projectId,
+    issueTypeNames
+  );
 }

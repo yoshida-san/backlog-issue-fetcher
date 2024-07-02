@@ -7,6 +7,7 @@ import * as categoryService from './categoryService';
 import { logInfo, logError } from '../utils/logger';
 import { Issue, Project, GetIssuesParams } from '../models/types';
 import { BacklogError } from '../utils/errors';
+import { exportToCsv } from '../utils/csvExporter';
 
 async function getProjectInfo(projectName: string): Promise<Project> {
   const project = await projectService.getProjectByName(projectName);
@@ -31,10 +32,18 @@ async function fetchProjectIssues(params: GetIssuesParams): Promise<Issue[]> {
 function logIssueDetails(issues: Issue[]) {
   logInfo('\nIssues List:');
   issues.forEach((issue) => {
-    logInfo(
-      `Issue Key: ${issue.issueKey}, Summary: ${issue.summary}, Status: ${issue.status.name}, Categories: ${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'}`
-    );
+    logInfo(`
+        Issue Key: ${issue.issueKey},
+        Summary: ${issue.summary},
+        Status: ${issue.status.name},
+        Categories: ${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'},
+        Last Updated: ${issue.updated},
+        Issue Type: ${issue.issueType.name}
+      `);
   });
+
+  exportToCsv(issues, 'issues_list.csv');
+  logInfo('\nIssues list has been exported to issues_list.csv');
 }
 
 function countIssuesByType(
@@ -51,10 +60,7 @@ function countIssuesByType(
   return counts;
 }
 
-function countIssuesByStatus(
-  issues: Issue[],
-  statusIds: Map<string, number>
-): Map<string, number> {
+function countIssuesByStatus(issues: Issue[], statusIds: Map<string, number>): Map<string, number> {
   const counts = new Map<string, number>();
 
   statusIds.forEach((id, name) => {
@@ -108,7 +114,9 @@ export async function analyzeIssues() {
     await analyzeProjectIssues(project);
   } catch (error) {
     if (error instanceof Error) {
-      logError(new BacklogError('An error occurred during issue analysis', 'ANALYSIS_ERROR', error));
+      logError(
+        new BacklogError('An error occurred during issue analysis', 'ANALYSIS_ERROR', error)
+      );
     } else {
       logError(new BacklogError('An unknown error occurred', 'UNKNOWN_ERROR', error));
     }

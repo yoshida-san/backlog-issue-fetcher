@@ -33,9 +33,16 @@ export async function getIssueTypes(projectId: number): Promise<IssueType[]> {
       if (error.response?.status === 404) {
         throw new BacklogError(`Project with ID ${projectId} not found`, 'PROJECT_NOT_FOUND');
       }
-      throw new NetworkError(`Failed to fetch issue types: ${error.message}`, error.response?.status);
+      throw new NetworkError(
+        `Failed to fetch issue types: ${error.message}`,
+        error.response?.status
+      );
     }
-    throw new BacklogError('Unknown error occurred while fetching issue types', 'UNKNOWN_ERROR', error);
+    throw new BacklogError(
+      'Unknown error occurred while fetching issue types',
+      'UNKNOWN_ERROR',
+      error
+    );
   }
 }
 
@@ -75,7 +82,11 @@ export async function getStatuses(projectId: number): Promise<Status[]> {
       }
       throw new NetworkError(`Failed to fetch statuses: ${error.message}`, error.response?.status);
     }
-    throw new BacklogError('Unknown error occurred while fetching statuses', 'UNKNOWN_ERROR', error);
+    throw new BacklogError(
+      'Unknown error occurred while fetching statuses',
+      'UNKNOWN_ERROR',
+      error
+    );
   }
 }
 
@@ -90,8 +101,15 @@ export async function getCategories(projectId: number): Promise<Category[]> {
       if (error.response?.status === 404) {
         throw new BacklogError(`Project with ID ${projectId} not found`, 'PROJECT_NOT_FOUND');
       }
-      throw new NetworkError(`Failed to fetch categories: ${error.message}`, error.response?.status);
+      throw new NetworkError(
+        `Failed to fetch categories: ${error.message}`,
+        error.response?.status
+      );
     }
-    throw new BacklogError('Unknown error occurred while fetching categories', 'UNKNOWN_ERROR', error);
+    throw new BacklogError(
+      'Unknown error occurred while fetching categories',
+      'UNKNOWN_ERROR',
+      error
+    );
   }
 }

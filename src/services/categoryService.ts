@@ -9,7 +9,7 @@ export async function getCategoryIds(
   if (!categoryNames || categoryNames.length === 0) {
     return new Map<string, number>();
   }
-  
+
   const allCategories = await backlogClient.getCategories(projectId);
   return getIdsFromNames<Category>(() => Promise.resolve(allCategories), projectId, categoryNames);
 }
