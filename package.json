@@ -9,7 +9,8 @@
     "format": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "fix": "eslint . --ext .ts --fix && prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "keywords": [],
   "author": "",
