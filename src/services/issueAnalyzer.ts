@@ -37,6 +37,8 @@ function logIssueDetails(issues: Issue[]) {
     );
   });
 
+  logInfo(`\nTotal number of issues: ${issues.length}`);
+
   exportToCsv(issues, 'issues_list.csv');
   logInfo('\nIssues list has been exported to issues_list.csv');
 }
