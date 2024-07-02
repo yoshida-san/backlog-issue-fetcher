@@ -32,14 +32,9 @@ async function fetchProjectIssues(params: GetIssuesParams): Promise<Issue[]> {
 function logIssueDetails(issues: Issue[]) {
   logInfo('\nIssues List:');
   issues.forEach((issue) => {
-    logInfo(`
-        Issue Key: ${issue.issueKey},
-        Summary: ${issue.summary},
-        Status: ${issue.status.name},
-        Categories: ${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'},
-        Last Updated: ${issue.updated},
-        Issue Type: ${issue.issueType.name}
-      `);
+    logInfo(
+      `Issue Key: ${issue.issueKey}, Summary: ${issue.summary}, Categories: ${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'}, Status: ${issue.status.name}, Issue Type: ${issue.issueType.name}, Last Updated: ${issue.updated}`
+    );
   });
 
   exportToCsv(issues, 'issues_list.csv');
