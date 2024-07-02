@@ -69,7 +69,9 @@ function countIssuesByStatus(issues: Issue[], statusIds: Map<string, number>): M
 function logIssueCounts(counts: Map<string, number>) {
   logInfo('\nIssues counts by type:');
   counts.forEach((count, typeName) => {
-    logInfo(`${typeName}: ${count}`);
+    if (count > 0) {
+      logInfo(`${typeName}: ${count}`);
+    }
   });
 }
 
