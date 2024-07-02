@@ -6,6 +6,7 @@ import * as statusService from './statusService';
 import * as categoryService from './categoryService';
 import { logInfo, logError } from '../utils/logger';
 import { Issue, Project, GetIssuesParams } from '../models/types';
+import { BacklogError } from '../utils/errors';
 
 async function getProjectInfo(projectName: string): Promise<Project> {
   const project = await projectService.getProjectByName(projectName);
@@ -106,7 +107,11 @@ export async function analyzeIssues() {
     const project = await getProjectInfo(CONFIG.PROJECT_NAME);
     await analyzeProjectIssues(project);
   } catch (error) {
-    logError('An error occurred:', error);
+    if (error instanceof Error) {
+      logError(new BacklogError('An error occurred during issue analysis', 'ANALYSIS_ERROR', error));
+    } else {
+      logError(new BacklogError('An unknown error occurred', 'UNKNOWN_ERROR', error));
+    }
     throw error;
   }
 }

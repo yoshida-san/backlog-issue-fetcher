@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { Config } from './models/types';
+import { ConfigurationError } from './utils/errors';
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ export const CONFIG: Config = {
   UPDATED_UNTIL: process.env.UPDATED_UNTIL || '',
 };
 
-if (!CONFIG.API_KEY || !CONFIG.SPACE_ID || !CONFIG.PROJECT_NAME || !CONFIG.UPDATED_SINCE || !CONFIG.UPDATED_UNTIL) {
-  throw new Error('必須の環境変数が設定されていません。API_KEY, SPACE_ID, PROJECT_NAME, UPDATED_SINCE, UPDATED_UNTILは必須です。');
+const requiredParams = ['API_KEY', 'SPACE_ID', 'PROJECT_NAME', 'UPDATED_SINCE', 'UPDATED_UNTIL'];
+const missingParams = requiredParams.filter(param => !CONFIG[param as keyof Config]);
+
+if (missingParams.length > 0) {
+  throw new ConfigurationError(`Missing required environment variables: ${missingParams.join(', ')}`);
 }

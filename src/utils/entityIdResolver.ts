@@ -1,4 +1,5 @@
 import { logError } from './logger';
+import { BacklogError } from './errors';
 
 export async function getIdsFromNames<T extends { id: number; name: string }>(
   fetchFunction: (projectId: number) => Promise<T[]>,
@@ -14,13 +15,13 @@ export async function getIdsFromNames<T extends { id: number; name: string }>(
       if (item) {
         itemMap.set(name, item.id);
       } else {
-        logError(`Item "${name}" not found`);
+        logError(new BacklogError(`Item "${name}" not found`, 'ITEM_NOT_FOUND'));
       }
     });
 
     return itemMap;
   } catch (error) {
-    logError('Error fetching items:', error);
+    logError(new BacklogError('Error fetching items', 'FETCH_ERROR', error));
     return new Map<string, number>();
   }
 }

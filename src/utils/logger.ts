@@ -2,6 +2,19 @@ export function logInfo(message: string) {
   console.log(`${message}`);
 }
 
-export function logError(message: string, error?: unknown) {
-  console.error(`[ERROR] ${message}`, error);
+export function logError(error: Error) {
+  console.error(`[ERROR] ${error.name}: ${error.message}`);
+  if ('code' in error) {
+    console.error(`Error Code: ${(error as any).code}`);
+  }
+  if ('details' in error) {
+    console.error('Details:', (error as any).details);
+  }
+  if ('status' in error) {
+    console.error(`Status: ${(error as any).status}`);
+  }
+}
+
+export function logWarning(message: string) {
+  console.warn(`[WARNING] ${message}`);
 }

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { CONFIG } from '../config';
 import { Project, IssueType, Issue, Status, Category, GetIssuesParams } from '../models/types';
+import { BacklogError, NetworkError } from '../utils/errors';
 
 const baseUrl = `https://${CONFIG.SPACE_ID}.backlog.jp/api/v2`;
 
@@ -11,10 +12,13 @@ export async function getProject(projectName: string): Promise<Project> {
     });
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      throw new Error('Project not found');
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        throw new BacklogError(`Project "${projectName}" not found`, 'PROJECT_NOT_FOUND');
+      }
+      throw new NetworkError(`Failed to fetch project: ${error.message}`, error.response?.status);
     }
-    throw error;
+    throw new BacklogError('Unknown error occurred while fetching project', 'UNKNOWN_ERROR', error);
   }
 }
 
@@ -25,10 +29,13 @@ export async function getIssueTypes(projectId: number): Promise<IssueType[]> {
     });
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      throw new Error('Project not found');
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        throw new BacklogError(`Project with ID ${projectId} not found`, 'PROJECT_NOT_FOUND');
+      }
+      throw new NetworkError(`Failed to fetch issue types: ${error.message}`, error.response?.status);
     }
-    throw error;
+    throw new BacklogError('Unknown error occurred while fetching issue types', 'UNKNOWN_ERROR', error);
   }
 }
 
@@ -48,16 +55,28 @@ export async function getIssues(params: GetIssuesParams): Promise<Issue[]> {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching issues:', error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      throw new NetworkError(`Failed to fetch issues: ${error.message}`, error.response?.status);
+    }
+    throw new BacklogError('Unknown error occurred while fetching issues', 'UNKNOWN_ERROR', error);
   }
 }
 
 export async function getStatuses(projectId: number): Promise<Status[]> {
-  const response = await axios.get(`${baseUrl}/projects/${projectId}/statuses`, {
-    params: { apiKey: CONFIG.API_KEY },
-  });
-  return response.data;
+  try {
+    const response = await axios.get(`${baseUrl}/projects/${projectId}/statuses`, {
+      params: { apiKey: CONFIG.API_KEY },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        throw new BacklogError(`Project with ID ${projectId} not found`, 'PROJECT_NOT_FOUND');
+      }
+      throw new NetworkError(`Failed to fetch statuses: ${error.message}`, error.response?.status);
+    }
+    throw new BacklogError('Unknown error occurred while fetching statuses', 'UNKNOWN_ERROR', error);
+  }
 }
 
 export async function getCategories(projectId: number): Promise<Category[]> {
@@ -67,7 +86,12 @@ export async function getCategories(projectId: number): Promise<Category[]> {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        throw new BacklogError(`Project with ID ${projectId} not found`, 'PROJECT_NOT_FOUND');
+      }
+      throw new NetworkError(`Failed to fetch categories: ${error.message}`, error.response?.status);
+    }
+    throw new BacklogError('Unknown error occurred while fetching categories', 'UNKNOWN_ERROR', error);
   }
 }
