@@ -1,8 +1,14 @@
 import { analyzeIssues } from './services/issueAnalyzer';
 import { logError } from './utils/logger';
 import { BacklogError, ConfigurationError, NetworkError } from './utils/errors';
+import fs from 'fs';
+import path from 'path';
 
 async function main() {
+  const csvDir = path.join(process.cwd(), 'csv');
+  if (!fs.existsSync(csvDir)) {
+    fs.mkdirSync(csvDir, { recursive: true });
+  }
   try {
     await analyzeIssues();
   } catch (error) {

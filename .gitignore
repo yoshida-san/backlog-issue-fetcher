@@ -1,6 +1,6 @@
 node_modules/
 dist/
 coverage/
+csv/
 .env
 .DS_Store
-issues_list_*

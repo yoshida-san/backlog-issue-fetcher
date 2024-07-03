@@ -1,5 +1,6 @@
 import { Issue } from '../models/types';
 import fs from 'fs';
+import path from 'path';
 
 export function exportToCsv(issues: Issue[]): void {
   const header = 'Issue Key,Summary,Categories,Status,Issue Type,Last Updated\n';
@@ -21,7 +22,12 @@ export function exportToCsv(issues: Issue[]): void {
     ('0' + now.getMinutes()).slice(-2) +
     ('0' + now.getSeconds()).slice(-2);
 
-  const filename = `issues_list_${timestamp}.csv`;
+  const csvDir = path.join(process.cwd(), 'csv');
+  if (!fs.existsSync(csvDir)) {
+    fs.mkdirSync(csvDir, { recursive: true });
+  }
+
+  const filename = path.join(csvDir, `issues_list_${timestamp}.csv`);
 
   fs.writeFileSync(filename, csvContent);
 
