@@ -3,4 +3,4 @@ dist/
 coverage/
 .env
 .DS_Store
-issues_list.csv
+issues_list_*

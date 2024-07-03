@@ -1,7 +1,7 @@
 import { Issue } from '../models/types';
 import fs from 'fs';
 
-export function exportToCsv(issues: Issue[], filename: string): void {
+export function exportToCsv(issues: Issue[]): void {
   const header = 'Issue Key,Summary,Categories,Status,Issue Type,Last Updated\n';
   const rows = issues
     .map(
@@ -11,5 +11,19 @@ export function exportToCsv(issues: Issue[], filename: string): void {
     .join('\n');
 
   const csvContent = header + rows;
+
+  const now = new Date();
+  const timestamp =
+    now.getFullYear() +
+    ('0' + (now.getMonth() + 1)).slice(-2) +
+    ('0' + now.getDate()).slice(-2) +
+    ('0' + now.getHours()).slice(-2) +
+    ('0' + now.getMinutes()).slice(-2) +
+    ('0' + now.getSeconds()).slice(-2);
+
+  const filename = `issues_list_${timestamp}.csv`;
+
   fs.writeFileSync(filename, csvContent);
+
+  console.log(`\nIssues list has been exported to ${filename}`);
 }

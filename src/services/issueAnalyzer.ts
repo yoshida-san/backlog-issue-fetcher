@@ -37,10 +37,7 @@ function logIssueDetails(issues: Issue[]) {
     );
   });
 
-  logInfo(`\nTotal number of issues: ${issues.length}`);
-
-  exportToCsv(issues, 'issues_list.csv');
-  logInfo('\nIssues list has been exported to issues_list.csv');
+  exportToCsv(issues);
 }
 
 function countIssuesByType(
@@ -70,7 +67,9 @@ function countIssuesByStatus(issues: Issue[], statusIds: Map<string, number>): M
 
 function logIssueCounts(counts: Map<string, number>) {
   logInfo('\nIssues counts by type:');
-  counts.forEach((count, typeName) => {
+  const sortedCounts = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+
+  sortedCounts.forEach(([typeName, count]) => {
     if (count > 0) {
       logInfo(`${typeName}: ${count}`);
     }
