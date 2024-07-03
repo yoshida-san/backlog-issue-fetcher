@@ -3,11 +3,11 @@ import fs from 'fs';
 import path from 'path';
 
 export function exportToCsv(issues: Issue[]): void {
-  const header = 'Issue Key,Summary,Categories,Status,Issue Type,Last Updated\n';
+  const header = 'Issue Key,Categories,Status,Issue Type,Last Updated\n';
   const rows = issues
     .map(
       (issue) =>
-        `${issue.issueKey},"${issue.summary}","${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'}",${issue.status.name},${issue.issueType.name},${issue.updated}`
+        `${issue.issueKey},${issue.category ? issue.category.map((c) => c.name).join(', ') : 'None'},${issue.status.name},${issue.issueType.name},${issue.updated}`
     )
     .join('\n');
 
@@ -27,7 +27,7 @@ export function exportToCsv(issues: Issue[]): void {
     fs.mkdirSync(csvDir, { recursive: true });
   }
 
-  const filename = path.join(csvDir, `issues_list_${timestamp}.csv`);
+  const filename = path.join(csvDir, `${timestamp}.csv`);
 
   fs.writeFileSync(filename, csvContent);
 
