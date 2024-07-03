@@ -49,10 +49,9 @@ After configuration, run the following command to execute the program:
 npm start
 ```
 
-## Testing
-To run the tests, use the following command:
+To clean up the CSV directory:
 ```
-npm test
+npm run clean
 ```
 
 ## License
