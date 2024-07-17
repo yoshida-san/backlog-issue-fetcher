@@ -5,3 +5,7 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    assignees:
+      - yoshida-san
+    reviewers:
+      - yoshida-san
